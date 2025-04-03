@@ -8,8 +8,8 @@ import NotFound from "./pages/NotFound";
 import { TodoProvider } from "./context/TodoContext";
 
 const App = () => (
-  <BrowserRouter>
-    <TodoProvider>
+  <TodoProvider>
+    <BrowserRouter>
       <TooltipProvider>
         <Toaster />
         <Sonner />
@@ -19,8 +19,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
         </Routes>
       </TooltipProvider>
-    </TodoProvider>
-  </BrowserRouter>
+    </BrowserRouter>
+  </TodoProvider>
 );
 
 export default App;
