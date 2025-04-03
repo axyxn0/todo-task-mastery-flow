@@ -9,8 +9,8 @@ import { TodoProvider } from "./context/TodoContext";
 
 const App = () => {
   return (
-    <TodoProvider>
-      <BrowserRouter>
+    <BrowserRouter>
+      <TodoProvider>
         <TooltipProvider>
           <Toaster />
           <Sonner />
@@ -20,8 +20,8 @@ const App = () => {
             <Route path="*" element={<NotFound />} />
           </Routes>
         </TooltipProvider>
-      </BrowserRouter>
-    </TodoProvider>
+      </TodoProvider>
+    </BrowserRouter>
   );
 };
 
