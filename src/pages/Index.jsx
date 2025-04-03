@@ -1,8 +1,8 @@
 
 import React, { useState } from 'react';
 import { toast } from "sonner";
-import TodoList from '@/components/TodoList';
-import TodoForm from '@/components/TodoForm';
+import TodoList from '@/components/TodoList.jsx';
+import TodoForm from '@/components/TodoForm.jsx';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 import { useTodo } from '@/context/TodoContext';
