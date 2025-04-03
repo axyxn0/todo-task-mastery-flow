@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { TodoService, Todo } from '@/lib/api';
@@ -14,8 +13,8 @@ const Index = () => {
   const [selectedTodo, setSelectedTodo] = useState<Todo | undefined>(undefined);
   const [todoIdToDelete, setTodoIdToDelete] = useState<number | null>(null);
   const [filters, setFilters] = useState({
-    status: '',
-    priority: '',
+    status: 'all',
+    priority: 'all',
     search: ''
   });
 
@@ -24,8 +23,8 @@ const Index = () => {
   const { data: todos = [], isLoading, error } = useQuery({
     queryKey: ['todos', filters],
     queryFn: () => TodoService.getAll({ 
-      status: filters.status, 
-      priority: filters.priority 
+      status: filters.status === 'all' ? '' : filters.status, 
+      priority: filters.priority === 'all' ? '' : filters.priority 
     }),
   });
 
@@ -82,7 +81,27 @@ const Index = () => {
     },
   });
 
-  const handleSubmit = (todo: Todo) => {
+  function handleEdit(todo: Todo) {
+    setSelectedTodo(todo);
+    setIsFormOpen(true);
+  }
+
+  function handleDelete(id: number) {
+    setTodoIdToDelete(id);
+    setIsDeleteDialogOpen(true);
+  }
+
+  function confirmDelete() {
+    if (todoIdToDelete) {
+      deleteTodoMutation.mutate(todoIdToDelete);
+    }
+  }
+
+  function handleStatusChange(id: number, status: 'pending' | 'completed' | 'in-progress') {
+    updateStatusMutation.mutate({ id, status });
+  }
+
+  function handleSubmit(todo: Todo) {
     if (selectedTodo && selectedTodo.id) {
       updateTodoMutation.mutate({ 
         id: selectedTodo.id, 
@@ -91,34 +110,13 @@ const Index = () => {
     } else {
       createTodoMutation.mutate(todo);
     }
-  };
-
-  const handleEdit = (todo: Todo) => {
-    setSelectedTodo(todo);
-    setIsFormOpen(true);
-  };
-
-  const handleDelete = (id: number) => {
-    setTodoIdToDelete(id);
-    setIsDeleteDialogOpen(true);
-  };
-
-  const confirmDelete = () => {
-    if (todoIdToDelete) {
-      deleteTodoMutation.mutate(todoIdToDelete);
-    }
-  };
-
-  const handleStatusChange = (id: number, status: 'pending' | 'completed' | 'in-progress') => {
-    updateStatusMutation.mutate({ id, status });
-  };
+  }
 
   const handleFilterChange = (newFilters: { status: string; priority: string; search: string }) => {
     setFilters(newFilters);
   };
 
   const filteredTodos = todos.filter(todo => {
-    // Apply search filter if exists
     if (filters.search && 
         !todo.title.toLowerCase().includes(filters.search.toLowerCase()) &&
         !todo.description?.toLowerCase().includes(filters.search.toLowerCase())) {
@@ -128,7 +126,6 @@ const Index = () => {
     return true;
   });
 
-  // Display error message if there's an issue fetching todos
   useEffect(() => {
     if (error) {
       toast.error('Failed to load tasks. Please try again later.');
@@ -152,7 +149,6 @@ const Index = () => {
         onFilterChange={handleFilterChange}
       />
       
-      {/* Form Dialog */}
       <Dialog open={isFormOpen} onOpenChange={setIsFormOpen}>
         <DialogContent className="sm:max-w-[600px]">
           <DialogHeader>
@@ -167,7 +163,6 @@ const Index = () => {
         </DialogContent>
       </Dialog>
       
-      {/* Delete Confirmation Dialog */}
       <AlertDialog open={isDeleteDialogOpen} onOpenChange={setIsDeleteDialogOpen}>
         <AlertDialogContent>
           <AlertDialogHeader>

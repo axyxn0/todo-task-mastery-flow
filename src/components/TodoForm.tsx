@@ -184,6 +184,7 @@ const TodoForm: React.FC<TodoFormProps> = ({
                 selected={date}
                 onSelect={handleDateChange}
                 initialFocus
+                className="p-3 pointer-events-auto"
               />
             </PopoverContent>
           </Popover>
